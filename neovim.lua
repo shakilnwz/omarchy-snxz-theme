@@ -10,7 +10,7 @@ return {
 				bg = "#00000e",
 				dark_bg = "#00000b",
 				darker_bg = "#000007",
-				lighter_bg = "#1a1a26",
+				lighter_bg = "#31314e",
 
 				fg = "#c7efe3",
 				dark_fg = "#95b3aa",
@@ -38,9 +38,9 @@ return {
 				cursor = "#c7efe3",
 				foreground = "#c7efe3",
 				background = "#00000e",
-				selection = "#1a1a26",
+				selection = "#31314e",
 				selection_foreground = "#c7efe3",
-				selection_background = "#1a1a26",
+				selection_background = "#31314e",
 			},
 		},
 		-- set up hot reload
