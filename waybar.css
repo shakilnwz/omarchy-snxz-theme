@@ -1,2 +1,13 @@
-@define-color background #00000e;
+@define-color background rgba(0, 0, 14, 0.6);
 @define-color foreground #c7efe3;
+
+* {
+    background-color: transparent;
+}
+window#waybar {
+    background-color: @background;
+}
+
+#taskbar button{
+    padding: 0px 4px 0px 4px;
+}
