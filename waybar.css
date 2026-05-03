@@ -1,4 +1,5 @@
 @define-color background rgba(0, 0, 14, 0.6);
+@define-color accent #7186fd;
 @define-color foreground #c7efe3;
 
 * {
@@ -10,4 +11,9 @@ window#waybar {
 
 #taskbar button{
     padding: 0px 4px 0px 4px;
+}
+tooltip{
+    background-color: @background;
+    border-radius: 6px;
+    border: 1px solid @accent;
 }
