@@ -18,3 +18,29 @@ tooltip{
     border-radius: 6px;
     border: 1px solid @accent;
 }
+
+#tray menu {
+    background-color: @background-solid; 
+    border: 1px solid;
+    border-color: @accent;
+    border-radius: 4px;
+}
+#tray menu menuitem:hover {
+    background-color: @accent; /* Hover background color */
+    color: @background-solid;            /* Text color on hover */
+}
+#tray menu menuitem:hover label{
+    color: @background-solid;
+}
+
+#tray menu menuitem:hover box{
+    background-color: @background-solid;
+    color: @foreground;
+}
+
+#taskbar{
+    margin-left: 12px;
+}
+#custom-expandright-icon {
+  margin-left: 12px;
+}
