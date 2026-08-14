@@ -23,8 +23,18 @@ mkdir -p "$HOME/.config/herdr"
 ln -sfn "$HOME/.config/omarchy/current/theme/herdr.toml" "$HOME/.config/herdr/config.toml"
 echo "  ✓ Linked Herdr config to ~/.config/omarchy/current/theme/herdr.toml"
 
-# 4. Ensure theme bin PATH is in ~/.zshrc
+# 4. Link theme binaries to ~/.local/bin as fallback
+mkdir -p "$HOME/.local/bin"
+if [[ -d "$THEME_DIR/bin" ]]; then
+    for bin_file in "$THEME_DIR/bin"/*; do
+        [[ -f "$bin_file" ]] && ln -sfn "$bin_file" "$HOME/.local/bin/$(basename "$bin_file")"
+    done
+    echo "  ✓ Linked theme scripts to ~/.local/bin/"
+fi
+
+# 5. Ensure theme bin PATH is in ~/.zshrc
 ZSHRC="$HOME/.zshrc"
+
 
 PATH_LINE='export PATH="$HOME/.config/omarchy/current/theme/bin:$PATH"'
 if [[ -f "$ZSHRC" ]]; then
