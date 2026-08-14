@@ -117,13 +117,45 @@ hl.bind("SUPER + mouse_down", hl.dsp.focus({ direction = "right" }), { descripti
 ------------------
 
 -- 3-finger swipe to move focus between windows (workspace-agnostic & monitor-aware, natural scrolling)
-hl.gesture({ fingers = 3, direction = "left",  action = "dispatcher, movefocus, r" })
-hl.gesture({ fingers = 3, direction = "right", action = "dispatcher, movefocus, l" })
-hl.gesture({ fingers = 3, direction = "up",    action = "dispatcher, movefocus, u" })
-hl.gesture({ fingers = 3, direction = "down",  action = "dispatcher, movefocus, d" })
+hl.gesture({
+    fingers   = 3,
+    direction = "left",
+    action    = function()
+        hl.dispatch(hl.dsp.focus({ direction = "right" }))
+    end,
+})
+
+hl.gesture({
+    fingers   = 3,
+    direction = "right",
+    action    = function()
+        hl.dispatch(hl.dsp.focus({ direction = "left" }))
+    end,
+})
+
+hl.gesture({
+    fingers   = 3,
+    direction = "up",
+    action    = function()
+        hl.dispatch(hl.dsp.focus({ direction = "up" }))
+    end,
+})
+
+hl.gesture({
+    fingers   = 3,
+    direction = "down",
+    action    = function()
+        hl.dispatch(hl.dsp.focus({ direction = "down" }))
+    end,
+})
 
 -- 4-finger horizontal swipe to switch workspaces
-hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
+hl.gesture({
+    fingers   = 4,
+    direction = "horizontal",
+    action    = "workspace",
+})
+
 
 
 
