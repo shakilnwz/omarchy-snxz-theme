@@ -1,33 +1,65 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-LABEL="📝 notes"
+LABEL="vnote"
 WORKDIR="$HOME/Documents/shakilnwz_notes"
 
 # Ensure notes directory exists
 mkdir -p "$WORKDIR"
 
-# Handle Note Search or Specific File argument
-target_file=""
-if [[ "${1:-}" == "--search" || "${1:-}" == "-s" || "${1:-}" == "search" ]]; then
-    # Interactive Note Search with syntax-highlighted preview
-    selected_note=$(
-        find "$WORKDIR" -type f \( -name "*.md" -o -name "*.txt" -o -name "*.org" -o -name "*.markdown" \) 2>/dev/null |
-            sed "s|$WORKDIR/||" |
-            fzf --preview "bat --color=always '$WORKDIR/{}' 2>/dev/null || cat '$WORKDIR/{}'" \
-                --preview-window right:60%:wrap \
-                --prompt="📓 Find Note > " \
-                --header="Enter: Open in Neovim | Esc: Cancel"
-    )
-    if [[ -n "$selected_note" ]]; then
-        target_file="$WORKDIR/$selected_note"
+# If a file was passed as argument directly, use it
+if [[ $# -ge 1 && -n "${1:-}" ]]; then
+    if [[ -f "$WORKDIR/$1" ]]; then
+        target_file="$WORKDIR/$1"
+    elif [[ -f "$1" ]]; then
+        target_file=$(realpath "$1")
     else
+        # Treat argument as note name
+        clean_name="${1%.md}.md"
+        target_file="$WORKDIR/$clean_name"
+        mkdir -p "$(dirname "$target_file")"
+        [[ ! -f "$target_file" ]] && touch "$target_file"
+    fi
+else
+    # Launch interactive fzf search on .md files in $WORKDIR with side bat preview
+    cd "$WORKDIR"
+    fzf_output=$(
+        find . -type f -name "*.md" 2>/dev/null |
+            sed 's|^\./||' |
+            sort |
+            fzf \
+                --print-query \
+                --layout=reverse \
+                --border=rounded \
+                --preview="bat --style=plain --color=always '$WORKDIR/{}' 2>/dev/null || cat '$WORKDIR/{}'" \
+                --preview-window="right:60%:wrap" \
+                --prompt="📓 Note > " \
+                --header="[Enter] Open existing / Create new | [Esc] Exit" || true
+    )
+
+    # If user cancelled fzf (empty output)
+    if [[ -z "${fzf_output:-}" ]]; then
         exit 0
     fi
-elif [[ $# -ge 1 && -n "${1:-}" && -f "$WORKDIR/$1" ]]; then
-    target_file="$WORKDIR/$1"
-elif [[ $# -ge 1 && -n "${1:-}" && -f "$1" ]]; then
-    target_file=$(realpath "$1")
+
+    query=$(echo "$fzf_output" | sed -n '1p')
+    selected=$(echo "$fzf_output" | sed -n '2p')
+
+    if [[ -n "$selected" && -f "$WORKDIR/$selected" ]]; then
+        # 1. Existing note selected
+        target_file="$WORKDIR/$selected"
+    elif [[ -n "$query" ]]; then
+        # 2. Query entered for a new note
+        clean_name="${query%.md}.md"
+        target_file="$WORKDIR/$clean_name"
+        mkdir -p "$(dirname "$target_file")"
+        if [[ ! -f "$target_file" ]]; then
+            touch "$target_file"
+        fi
+    else
+        # 3. Fallback: open notes directory in neovim
+        target_file=""
+    fi
 fi
 
 # 1. Check if Herdr socket is reachable
@@ -53,13 +85,13 @@ ensure_herdr_running || true
 if is_herdr_running; then
     ws_json=$(herdr workspace list 2>/dev/null || echo "")
     
-    # Check if a workspace with label == "📝 notes" or "notes" exists
+    # Check if a workspace with label == "vnote" exists
     matching_ws_id=$(echo "$ws_json" | python3 -c '
 import sys, json
 try:
     data = json.load(sys.stdin)
     workspaces = data.get("result", {}).get("workspaces", [])
-    target_names = ["📝 notes", "notes"]
+    target_names = ["vnote", "📝 vnote", "notes"]
     for ws in workspaces:
         if ws.get("label") in target_names:
             print(ws.get("workspace_id"))
@@ -69,13 +101,31 @@ except Exception:
 ')
 
     if [[ -n "$matching_ws_id" ]]; then
-        # Workspace exists -> switch focus to it
+        # Workspace already exists -> switch focus to it
         herdr workspace focus "$matching_ws_id" >/dev/null
+        
+        # If a specific note was selected, tell Neovim in that workspace to open it
+        if [[ -n "${target_file:-}" ]]; then
+            pane_json=$(herdr pane list --workspace "$matching_ws_id" 2>/dev/null || echo "")
+            target_pane=$(echo "$pane_json" | python3 -c '
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    panes = data.get("result", {}).get("panes", [])
+    if panes:
+        print(panes[0].get("pane_id", ""))
+except Exception:
+    pass
+')
+            if [[ -n "$target_pane" ]]; then
+                herdr pane send-keys "$target_pane" "esc" >/dev/null 2>&1 || true
+                herdr pane run "$target_pane" ":e $target_file" >/dev/null 2>&1 || true
+            fi
+        fi
     else
-        # Create 3-pane Note Studio workspace:
-        # [ Left: File Explorer (Yazi) | Center: Neovim | Right: Antigravity AI (agy) ]
+        # Workspace does not exist -> create workspace with cwd $WORKDIR and open Neovim
         create_res=$(herdr workspace create --label "$LABEL" --cwd "$WORKDIR" --focus 2>/dev/null)
-        left_pane_id=$(echo "$create_res" | python3 -c '
+        root_pane_id=$(echo "$create_res" | python3 -c '
 import sys, json
 try:
     data = json.load(sys.stdin)
@@ -84,57 +134,17 @@ except Exception:
     pass
 ')
 
-        # Split root pane to the right (ratio 0.80 for center + right panes)
-        center_split_res=$(herdr pane split "$left_pane_id" --direction right --ratio 0.80 --cwd "$WORKDIR" --no-focus 2>/dev/null || echo "")
-        center_pane_id=$(echo "$center_split_res" | python3 -c '
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    print(data.get("result", {}).get("pane_id", ""))
-except Exception:
-    pass
-')
-
-        # Split center pane to the right (ratio 0.30 for narrow agy AI assistant pane)
-        right_pane_id=""
-        if [[ -n "$center_pane_id" ]]; then
-            right_split_res=$(herdr pane split "$center_pane_id" --direction right --ratio 0.30 --cwd "$WORKDIR" --no-focus 2>/dev/null || echo "")
-            right_pane_id=$(echo "$right_split_res" | python3 -c '
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    print(data.get("result", {}).get("pane_id", ""))
-except Exception:
-    pass
-')
-        fi
-
-        # 1. Left Pane: File Explorer (yazi)
-        if [[ -n "$left_pane_id" ]]; then
-            if command -v yazi >/dev/null 2>&1; then
-                herdr pane run "$left_pane_id" "yazi" >/dev/null 2>&1 || true
-            fi
-        fi
-
-        # 2. Center Pane: Neovim
-        if [[ -n "$center_pane_id" ]]; then
-            if [[ -n "$target_file" ]]; then
-                herdr pane run "$center_pane_id" "nvim '$target_file'" >/dev/null 2>&1 || true
+        if [[ -n "$root_pane_id" ]]; then
+            if [[ -n "${target_file:-}" ]]; then
+                herdr pane run "$root_pane_id" "nvim '$target_file'" >/dev/null 2>&1 || true
             else
-                herdr pane run "$center_pane_id" "nvim" >/dev/null 2>&1 || true
-            fi
-        fi
-
-        # 3. Right Pane: Antigravity AI Agent (agy)
-        if [[ -n "$right_pane_id" ]]; then
-            if command -v agy >/dev/null 2>&1; then
-                herdr pane run "$right_pane_id" "agy" >/dev/null 2>&1 || true
+                herdr pane run "$root_pane_id" "nvim ." >/dev/null 2>&1 || true
             fi
         fi
     fi
 fi
 
-# If outside Herdr (opened directly via keybinding), launch/attach Herdr UI
+# If outside Herdr (opened directly via keybinding/terminal), launch/attach Herdr UI
 if [[ -z "${HERDR_ENV:-}" ]]; then
     cd "$WORKDIR" && exec herdr
 fi
