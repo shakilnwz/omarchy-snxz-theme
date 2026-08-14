@@ -1,8 +1,8 @@
 -- This file is the Lua configuration for Hyprland (Omarchy Quattro / Hyprland 0.55+).
 -- It is intended to be included / required in your main hyprland.lua.
 
-local activeBorderColor   = "rgb(7186fd)"
-local activeShadowColor   = "rgb(8496fd)"
+local activeBorderColor = "rgb(7186fd)"
+local activeShadowColor = "rgb(8496fd)"
 local inactiveBorderColor = "rgba(00000eba)"
 local inactiveShadowColor = "rgba(00000ea6)"
 
@@ -11,52 +11,52 @@ local inactiveShadowColor = "rgba(00000ea6)"
 -----------------------
 
 hl.config({
-    general = {
-        col = {
-            active_border   = activeBorderColor,
-            inactive_border = inactiveBorderColor,
-        },
-        gaps_in     = 0,
-        gaps_out    = 0,
-        border_size = 1,
-        layout      = "scrolling",
-    },
+	general = {
+		col = {
+			active_border = activeBorderColor,
+			inactive_border = inactiveBorderColor,
+		},
+		gaps_in = 0,
+		gaps_out = 0,
+		border_size = 1,
+		layout = "scrolling",
+	},
 
-    group = {
-        col = {
-            border_active   = activeBorderColor,
-            border_inactive = inactiveBorderColor,
-        },
-    },
+	group = {
+		col = {
+			border_active = activeBorderColor,
+			border_inactive = inactiveBorderColor,
+		},
+	},
 
-    decoration = {
-        rounding = 0,
+	decoration = {
+		rounding = 0,
 
-        blur = {
-            enabled           = true,
-            size              = 5,
-            passes            = 2,
-            new_optimizations = true,
-            vibrancy          = 0.2,
-            ignore_opacity    = false,
-        },
+		blur = {
+			enabled = true,
+			size = 5,
+			passes = 2,
+			new_optimizations = true,
+			vibrancy = 0.2,
+			ignore_opacity = false,
+		},
 
-        shadow = {
-            enabled        = true,
-            range          = 16,
-            render_power   = 4,
-            color          = activeShadowColor,
-            color_inactive = inactiveShadowColor,
-        },
-    },
+		shadow = {
+			enabled = true,
+			range = 16,
+			render_power = 4,
+			color = activeShadowColor,
+			color_inactive = inactiveShadowColor,
+		},
+	},
 
-    scrolling = {
-        fullscreen_on_one_column = true,
-        column_width             = 1,
-        focus_fit_method         = 1,
-        follow_focus             = true,
-        follow_min_visible       = 0.1,
-    },
+	scrolling = {
+		fullscreen_on_one_column = true,
+		column_width = 1,
+		focus_fit_method = 1,
+		follow_focus = true,
+		follow_min_visible = 0.1,
+	},
 })
 
 ----------------------
@@ -65,41 +65,60 @@ hl.config({
 
 -- Makes keepassxc float
 hl.window_rule({
-    name  = "keepass-window",
-    match = { class = "org.keepassxc.KeePassXC" },
-    float = true,
-    pin   = true,
+	name = "keepass-window",
+	match = { class = "org.keepassxc.KeePassXC" },
+	float = true,
+	pin = true,
 })
 
 hl.window_rule({
-    name        = "floating-window",
-    match       = { float = true },
-    border_size = 2,
-    rounding    = 4,
-    center      = true,
+	name = "floating-window",
+	match = { float = true },
+	border_size = 2,
+	rounding = 4,
+	center = true,
 })
 
 hl.window_rule({
-    name        = "modal-window",
-    match       = { modal = true },
-    border_size = 2,
-    rounding    = 4,
-    float       = true,
-    center      = true,
+	name = "modal-window",
+	match = { modal = true },
+	border_size = 2,
+	rounding = 4,
+	float = true,
+	center = true,
 })
-
 
 -------------------------
 ---- CUSTOM KEYBINDS ----
 -------------------------
 
-hl.bind("SUPER + ALT + Return", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec --dir=\"$(omarchy-cmd-terminal-cwd)\" zsh -c \"herdr\""), { description = "Herdr" })
+hl.bind(
+	"SUPER + ALT + Return",
+	hl.dsp.exec_cmd('uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" zsh -c "herdr"'),
+	{ description = "Herdr" }
+)
 hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd("omarchy-launch-tui lazydocker"), { description = "Docker" })
-hl.bind("SUPER + SHIFT + ALT + O", hl.dsp.exec_cmd("omarchy-launch-or-focus ^obsidian$ \"uwsm-app -- obsidian\""), { description = "Obsidian" })
-hl.bind("SUPER + SHIFT + O", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/vnote"), { description = "Vnote" })
+hl.bind(
+	"SUPER + SHIFT + ALT + O",
+	hl.dsp.exec_cmd('omarchy-launch-or-focus ^obsidian$ "uwsm-app -- obsidian"'),
+	{ description = "Obsidian" }
+)
+hl.bind(
+	"SUPER + SHIFT + O",
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/vnote"),
+	{ description = "Vnote" }
+)
 hl.bind("SUPER + SHIFT + slash", hl.dsp.exec_cmd("uwsm-app -- KeePassXC"), { description = "Passwords" })
-hl.bind("SUPER + backslash", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/herdr-sessionizer"), { description = "Herdr" })
-hl.bind("SUPER + SHIFT + backslash", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/tmux-sessionizer"), { description = "Tmux" })
+hl.bind(
+	"SUPER + backslash",
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/herdr-sessionizer"),
+	{ description = "Herdr" }
+)
+hl.bind(
+	"SUPER + SHIFT + backslash",
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/tmux-sessionizer"),
+	{ description = "Tmux" }
+)
 hl.bind("F7", hl.dsp.exec_cmd("~/.config/omarchy/current/theme/bin/cycle-display"), { description = "Cycle display" })
 
 -- Move active window with SUPER + SHIFT + arrow keys
@@ -118,46 +137,43 @@ hl.bind("SUPER + mouse_down", hl.dsp.focus({ direction = "right" }), { descripti
 
 -- 3-finger swipe to move focus between windows (workspace-agnostic & monitor-aware, natural scrolling)
 hl.gesture({
-    fingers   = 3,
-    direction = "left",
-    action    = function()
-        hl.dispatch(hl.dsp.focus({ direction = "right" }))
-    end,
+	fingers = 3,
+	direction = "left",
+	action = function()
+		hl.dispatch(hl.dsp.focus({ direction = "right" }))
+	end,
 })
 
 hl.gesture({
-    fingers   = 3,
-    direction = "right",
-    action    = function()
-        hl.dispatch(hl.dsp.focus({ direction = "left" }))
-    end,
+	fingers = 3,
+	direction = "right",
+	action = function()
+		hl.dispatch(hl.dsp.focus({ direction = "left" }))
+	end,
 })
 
 hl.gesture({
-    fingers   = 3,
-    direction = "up",
-    action    = function()
-        hl.dispatch(hl.dsp.focus({ direction = "up" }))
-    end,
+	fingers = 3,
+	direction = "up",
+	action = function()
+		hl.dispatch(hl.dsp.focus({ direction = "up" }))
+	end,
 })
 
 hl.gesture({
-    fingers   = 3,
-    direction = "down",
-    action    = function()
-        hl.dispatch(hl.dsp.focus({ direction = "down" }))
-    end,
+	fingers = 3,
+	direction = "down",
+	action = function()
+		hl.dispatch(hl.dsp.focus({ direction = "down" }))
+	end,
 })
 
 -- 4-finger horizontal swipe to switch workspaces
 hl.gesture({
-    fingers   = 4,
-    direction = "horizontal",
-    action    = "workspace",
+	fingers = 4,
+	direction = "horizontal",
+	action = "workspace",
 })
-
-
-
 
 -----------------------
 ---- MONITOR SETUP ----
@@ -165,15 +181,56 @@ hl.gesture({
 
 -- External 1920x1080 display (HDMI-A-2) on top of the laptop display (60Hz, 1x scale)
 hl.monitor({
-    output   = "HDMI-A-2",
-    mode     = "1920x1080@60",
-    position = "auto-up",
-    scale    = 1,
+	output = "HDMI-A-2",
+	mode = "1920x1080@60",
+	position = "auto-up",
+	scale = 1,
 })
 
 hl.monitor({
-    output   = "eDP-1",
-    mode     = "1920x1080@60",
-    position = "auto",
-    scale    = 1,
+	output = "eDP-1",
+	mode = "1920x1080@60",
+	position = "auto",
+	scale = 1,
+})
+
+hl.config({
+	input = {
+		-- Use multiple keyboard layouts and switch between them with Left Alt + Right Alt.
+		-- kb_layout = "us,dk,eu",
+		-- kb_options = "compose:caps,shift:both_capslock_cancel,grp:alts_toggle",
+
+		-- Use a specific keyboard variant if needed (e.g. intl for international keyboards).
+		-- kb_variant = "intl",
+
+		-- Change speed of keyboard repeat.
+		-- repeat_rate = 40,
+		-- repeat_delay = 250,
+
+		-- Start with numlock on by default.
+		-- numlock_by_default = true,
+
+		-- Increase sensitivity for mouse/trackpad (default: 0).
+		sensitivity = 1,
+
+		-- Turn off mouse acceleration (default: adaptive).
+		accel_profile = "flat",
+
+		touchpad = {
+			-- Use natural (inverse) scrolling.
+			natural_scroll = true,
+
+			-- Use two-finger clicks for right-click instead of lower-right corner.
+			-- clickfinger_behavior = true,
+
+			-- Control the speed of your scrolling.
+			scroll_factor = 1,
+
+			-- Enable the touchpad while typing.
+			disable_while_typing = true,
+
+			-- Left-click-and-drag with three fingers.
+			-- drag_3fg = 1,
+		},
+	},
 })
