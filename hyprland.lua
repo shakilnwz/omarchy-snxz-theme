@@ -93,38 +93,38 @@ hl.window_rule({
 ---- CUSTOM KEYBINDS ----
 -------------------------
 
-hl.bind("SUPER + ALT + Return", "exec, uwsm-app -- xdg-terminal-exec --dir=\"$(omarchy-cmd-terminal-cwd)\" zsh -c \"herdr\"", { description = "Herdr" })
-hl.bind("SUPER + SHIFT + D", "exec, omarchy-launch-tui lazydocker", { description = "Docker" })
-hl.bind("SUPER + SHIFT + ALT + O", "exec, omarchy-launch-or-focus ^obsidian$ \"uwsm-app -- obsidian\"", { description = "Obsidian" })
-hl.bind("SUPER + SHIFT + O", "exec, uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/vnote", { description = "Vnote" })
-hl.bind("SUPER + SHIFT + slash", "exec, uwsm-app -- KeePassXC", { description = "Passwords" })
-hl.bind("SUPER + backslash", "exec, uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/herdr-sessionizer", { description = "Herdr" })
-hl.bind("SUPER + SHIFT + backslash", "exec, uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/tmux-sessionizer", { description = "Tmux" })
-hl.bind("F7", "exec, ~/.config/omarchy/current/theme/bin/cycle-display", { description = "Cycle display" })
+hl.bind("SUPER + ALT + Return", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec --dir=\"$(omarchy-cmd-terminal-cwd)\" zsh -c \"herdr\""), { description = "Herdr" })
+hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd("omarchy-launch-tui lazydocker"), { description = "Docker" })
+hl.bind("SUPER + SHIFT + ALT + O", hl.dsp.exec_cmd("omarchy-launch-or-focus ^obsidian$ \"uwsm-app -- obsidian\""), { description = "Obsidian" })
+hl.bind("SUPER + SHIFT + O", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/vnote"), { description = "Vnote" })
+hl.bind("SUPER + SHIFT + slash", hl.dsp.exec_cmd("uwsm-app -- KeePassXC"), { description = "Passwords" })
+hl.bind("SUPER + backslash", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/herdr-sessionizer"), { description = "Herdr" })
+hl.bind("SUPER + SHIFT + backslash", hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/tmux-sessionizer"), { description = "Tmux" })
+hl.bind("F7", hl.dsp.exec_cmd("~/.config/omarchy/current/theme/bin/cycle-display"), { description = "Cycle display" })
 
 -- Move active window with SUPER + SHIFT + arrow keys
-hl.bind("SUPER + SHIFT + Left", "movewindow, l", { description = "Move window left" })
-hl.bind("SUPER + SHIFT + Right", "movewindow, r", { description = "Move window right" })
-hl.bind("SUPER + SHIFT + Up", "movewindow, u", { description = "Move window up" })
-hl.bind("SUPER + SHIFT + Down", "movewindow, d", { description = "Move window down" })
+hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "left" }), { description = "Move window left" })
+hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "right" }), { description = "Move window right" })
+hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "up" }), { description = "Move window up" })
+hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "down" }), { description = "Move window down" })
 
 -- Move focus with SUPER + mouse scroll wheel
-hl.bind("SUPER + mouse_up", "movefocus, l", { description = "Focus left window" })
-hl.bind("SUPER + mouse_down", "movefocus, r", { description = "Focus right window" })
-
+hl.bind("SUPER + mouse_up", hl.dsp.focus({ direction = "left" }), { description = "Focus left window" })
+hl.bind("SUPER + mouse_down", hl.dsp.focus({ direction = "right" }), { description = "Focus right window" })
 
 ------------------
 ---- GESTURES ----
 ------------------
 
 -- 3-finger swipe to move focus between windows (workspace-agnostic & monitor-aware, natural scrolling)
-hl.gesture({ fingers = 3, direction = "left",  action = "dispatcher, movefocus, r" })
-hl.gesture({ fingers = 3, direction = "right", action = "dispatcher, movefocus, l" })
-hl.gesture({ fingers = 3, direction = "up",    action = "dispatcher, movefocus, u" })
-hl.gesture({ fingers = 3, direction = "down",  action = "dispatcher, movefocus, d" })
+hl.gesture({ fingers = 3, direction = "left",  action = hl.dsp.focus({ direction = "right" }) })
+hl.gesture({ fingers = 3, direction = "right", action = hl.dsp.focus({ direction = "left" }) })
+hl.gesture({ fingers = 3, direction = "up",    action = hl.dsp.focus({ direction = "up" }) })
+hl.gesture({ fingers = 3, direction = "down",  action = hl.dsp.focus({ direction = "down" }) })
 
 -- 4-finger horizontal swipe to switch workspaces
 hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
+
 
 -----------------------
 ---- MONITOR SETUP ----
