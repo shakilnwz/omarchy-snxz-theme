@@ -18,8 +18,14 @@ mkdir -p "$OMARCHY_USER_THEMES"
 ln -sfn "$THEME_DIR" "$OMARCHY_USER_THEMES/$THEME_NAME"
 echo "  ✓ Linked theme to $OMARCHY_USER_THEMES/$THEME_NAME"
 
-# 3. Ensure theme bin PATH is in ~/.zshrc
+# 3. Link Herdr config to active theme
+mkdir -p "$HOME/.config/herdr"
+ln -sfn "$HOME/.config/omarchy/current/theme/herdr.toml" "$HOME/.config/herdr/config.toml"
+echo "  ✓ Linked Herdr config to ~/.config/omarchy/current/theme/herdr.toml"
+
+# 4. Ensure theme bin PATH is in ~/.zshrc
 ZSHRC="$HOME/.zshrc"
+
 PATH_LINE='export PATH="$HOME/.config/omarchy/current/theme/bin:$PATH"'
 if [[ -f "$ZSHRC" ]]; then
     if ! grep -q "omarchy/current/theme/bin" "$ZSHRC"; then
