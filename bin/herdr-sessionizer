@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# 1. Determine selected directory or file
+if [[ $# -ge 1 && -n "${1:-}" ]]; then
+    selected="$1"
+else
+    # Enable case-insensitive globbing for preview command
+    shopt -s nocaseglob 2>/dev/null || true
+    
+    selected=$(
+        find ~/code ~/Backup ~/Documents ~/Downloads ~/.local/bin ~/.config -mindepth 0 -maxdepth 5 \( -name .git -o -name node_modules -o -name .venv -o -name target \) -prune -o -print 2>/dev/null |
+            sed "s|$HOME|~|" |
+            fzf --preview '[ -f {} ] && head -n 200 {} 2>/dev/null || [ -f {}/README.md ] && cat {}/README.md || [ -f {}/readme.md ] && cat {}/readme.md || [ -f {}/index.html ] && cat {}/index.html || echo "Path: {}"' --preview-window right:50%:wrap
+    )
+    shopt -u nocaseglob 2>/dev/null || true
+    selected="${selected/#\~/$HOME}"
+fi
+
+if [[ -z "${selected:-}" ]]; then
+    exit 0
+fi
+
+# If a file was selected, target its parent directory
+if [[ -f "$selected" ]]; then
+    selected=$(dirname -- "$selected")
+fi
+
+# Expand path & derive workspace name
+if [[ ! -d "$selected" ]]; then
+    echo "Directory not found: $selected" >&2
+    exit 1
+fi
+
+selected=$(realpath -- "$selected")
+selected_name=$(basename "$selected" | tr . _)
+
+# 2. Check if Herdr socket is reachable
+is_herdr_running() {
+    herdr workspace list >/dev/null 2>&1
+}
+
+# 3. Hydration function
+hydrate() {
+    local target_pane="$1"
+    local dir="$2"
+    local script_file=""
+    
+    if [[ -f "$dir/.herdr-sessionizer" ]]; then
+        script_file="$dir/.herdr-sessionizer"
+    elif [[ -f "$dir/.tmux-sessionizer" ]]; then
+        script_file="$dir/.tmux-sessionizer"
+    elif [[ -f "$HOME/.herdr-sessionizer" ]]; then
+        script_file="$HOME/.herdr-sessionizer"
+    elif [[ -f "$HOME/.tmux-sessionizer" ]]; then
+        script_file="$HOME/.tmux-sessionizer"
+    fi
+
+    if [[ -n "$script_file" && -n "${target_pane:-}" ]]; then
+        herdr pane run "$target_pane" "source '$script_file'" >/dev/null 2>&1 || true
+    fi
+}
+
+ensure_herdr_running() {
+    if ! is_herdr_running; then
+        (cd "$selected" && herdr server >/dev/null 2>&1 &)
+        for _ in {1..30}; do
+            if is_herdr_running; then
+                return 0
+            fi
+            sleep 0.1
+        done
+        return 1
+    fi
+}
+
+ensure_herdr_running || true
+
+if is_herdr_running; then
+    # Parse existing workspaces from `herdr workspace list`
+    ws_json=$(herdr workspace list 2>/dev/null || echo "")
+    
+    # Check if a workspace with label == selected_name exists
+    matching_ws_id=$(echo "$ws_json" | python3 -c '
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    workspaces = data.get("result", {}).get("workspaces", [])
+    target_name = sys.argv[1]
+    for ws in workspaces:
+        if ws.get("label") == target_name:
+            print(ws.get("workspace_id"))
+            break
+except Exception:
+    pass
+' "$selected_name")
+
+    if [[ -n "$matching_ws_id" ]]; then
+        # Workspace already exists -> switch focus to it
+        herdr workspace focus "$matching_ws_id" >/dev/null
+    else
+        # Workspace does not exist -> create it with --cwd and --focus
+        create_res=$(herdr workspace create --label "$selected_name" --cwd "$selected" --focus 2>/dev/null)
+        root_pane_id=$(echo "$create_res" | python3 -c '
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get("result", {}).get("root_pane", {}).get("pane_id", ""))
+except Exception:
+    pass
+')
+        hydrate "$root_pane_id" "$selected"
+    fi
+fi
+
+# If outside Herdr (opened directly), launch/attach Herdr UI
+if [[ -z "${HERDR_ENV:-}" ]]; then
+    cd "$selected" && exec herdr
+fi

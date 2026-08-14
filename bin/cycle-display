@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Define monitor configurations (should match your monitors.conf)
+INTERNAL_MON="eDP-1"
+INTERNAL_CONF="1920x1080@60, 0x1080, 1"
+
+EXTERNAL_MON="HDMI-A-1"
+EXTERNAL_CONF="1920x1080@60, 0x0, 1"
+
+# Get active monitors
+ACTIVE_MONITORS=$(hyprctl monitors -j | jq -r '.[].name')
+
+# Check if each monitor is active
+INTERNAL_ACTIVE=false
+EXTERNAL_ACTIVE=false
+
+for mon in $ACTIVE_MONITORS; do
+    if [ "$mon" = "$INTERNAL_MON" ]; then
+        INTERNAL_ACTIVE=true
+    elif [ "$mon" = "$EXTERNAL_MON" ]; then
+        EXTERNAL_ACTIVE=true
+    fi
+done
+
+# Check if the external monitor is connected at all
+ALL_CONNECTED=$(hyprctl monitors all -j | jq -r '.[].name')
+EXTERNAL_CONNECTED=false
+for mon in $ALL_CONNECTED; do
+    if [ "$mon" = "$EXTERNAL_MON" ]; then
+        EXTERNAL_CONNECTED=true
+    fi
+done
+
+if [ "$EXTERNAL_CONNECTED" = false ]; then
+    notify-send -t 2000 "Display Switcher" "Secondary monitor ($EXTERNAL_MON) not connected."
+    # Ensure internal is enabled
+    hyprctl keyword monitor "$INTERNAL_MON, $INTERNAL_CONF"
+    exit 0
+fi
+
+# Cycling logic:
+# 1. Both active -> Switch to External only (Secondary)
+# 2. External only active -> Switch to Laptop only (Laptop)
+# 3. Internal only active -> Switch to Both
+if [ "$INTERNAL_ACTIVE" = true ] && [ "$EXTERNAL_ACTIVE" = true ]; then
+    # Switch to External Only
+    hyprctl keyword monitor "$INTERNAL_MON, disable"
+    hyprctl keyword monitor "$EXTERNAL_MON, $EXTERNAL_CONF"
+    notify-send -t 2000 "Display Switcher" "Secondary Display Only"
+elif [ "$EXTERNAL_ACTIVE" = true ]; then
+    # Switch to Laptop Only
+    hyprctl keyword monitor "$INTERNAL_MON, $INTERNAL_CONF"
+    hyprctl keyword monitor "$EXTERNAL_MON, disable"
+    notify-send -t 2000 "Display Switcher" "Laptop Display Only"
+else
+    # Switch to Both
+    hyprctl keyword monitor "$INTERNAL_MON, $INTERNAL_CONF"
+    hyprctl keyword monitor "$EXTERNAL_MON, $EXTERNAL_CONF"
+    notify-send -t 2000 "Display Switcher" "Both Displays Enabled"
+fi
