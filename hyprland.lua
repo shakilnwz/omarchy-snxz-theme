@@ -214,7 +214,7 @@ hl.config({
 		sensitivity = 1,
 
 		-- Turn off mouse acceleration (default: adaptive).
-		accel_profile = "flat",
+		-- accel_profile = "flat",
 
 		touchpad = {
 			-- Use natural (inverse) scrolling.
