@@ -30,7 +30,7 @@ hl.config({
 	},
 
 	decoration = {
-		rounding = 0,
+		rounding = 12,
 
 		blur = {
 			enabled = true,
@@ -205,7 +205,7 @@ hl.config({
 
 		-- Change speed of keyboard repeat.
 		-- repeat_rate = 40,
-		-- repeat_delay = 250,
+		repeat_delay = 0,
 
 		-- Start with numlock on by default.
 		-- numlock_by_default = true,
@@ -229,7 +229,7 @@ hl.config({
 			disable_while_typing = true,
 
 			-- Left-click-and-drag with three fingers.
-			drag_3fg = 1,
+			-- drag_3fg = 1,
 		},
 	},
 })
