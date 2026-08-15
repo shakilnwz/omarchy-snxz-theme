@@ -30,7 +30,7 @@ hl.config({
 	},
 
 	decoration = {
-		rounding = 12,
+		rounding = 0,
 
 		blur = {
 			enabled = true,
@@ -205,7 +205,7 @@ hl.config({
 
 		-- Change speed of keyboard repeat.
 		-- repeat_rate = 40,
-		repeat_delay = 0,
+		-- repeat_delay = 250,
 
 		-- Start with numlock on by default.
 		-- numlock_by_default = true,
