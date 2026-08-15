@@ -30,7 +30,7 @@ hl.config({
 	},
 
 	decoration = {
-		rounding = 12,
+		rounding = 10,
 
 		blur = {
 			enabled = true,
@@ -199,6 +199,7 @@ hl.monitor({
 	scale = 1,
 })
 
+-- Input config
 hl.config({
 	input = {
 		-- Use multiple keyboard layouts and switch between them with Left Alt + Right Alt.
