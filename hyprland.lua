@@ -204,8 +204,8 @@ hl.config({
 		-- kb_variant = "intl",
 
 		-- Change speed of keyboard repeat.
-		-- repeat_rate = 40,
-		-- repeat_delay = 250,
+		repeat_rate = 50,
+		repeat_delay = 200,
 
 		-- Start with numlock on by default.
 		-- numlock_by_default = true,
@@ -221,9 +221,9 @@ hl.config({
 			natural_scroll = true,
 
 			-- Use two-finger clicks for right-click instead of lower-right corner.
-			-- clickfinger_behavior = true,
+			clickfinger_behavior = false,
 			-- Control the speed of your scrolling.
-			scroll_factor = 1,
+			scroll_factor = 1.5,
 
 			-- Enable the touchpad while typing.
 			disable_while_typing = true,
