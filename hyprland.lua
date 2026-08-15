@@ -30,7 +30,7 @@ hl.config({
 	},
 
 	decoration = {
-		rounding = 0,
+		rounding = 12,
 
 		blur = {
 			enabled = true,
@@ -88,6 +88,11 @@ hl.window_rule({
 	center = true,
 })
 
+hl.window_rule({
+	name = "tiled-window",
+	match = { float = false },
+	rounding = 0,
+})
 -------------------------
 ---- CUSTOM KEYBINDS ----
 -------------------------
