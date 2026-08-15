@@ -105,21 +105,21 @@ hl.bind(
 )
 hl.bind(
 	"SUPER + SHIFT + O",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/vnote"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/vnote"),
 	{ description = "Vnote" }
 )
 hl.bind("SUPER + SHIFT + slash", hl.dsp.exec_cmd("uwsm-app -- KeePassXC"), { description = "Passwords" })
 hl.bind(
 	"SUPER + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/herdr-sessionizer"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/herdr-sessionizer"),
 	{ description = "Herdr" }
 )
 hl.bind(
 	"SUPER + SHIFT + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.config/omarchy/current/theme/bin/tmux-sessionizer"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/tmux-sessionizer"),
 	{ description = "Tmux" }
 )
-hl.bind("F7", hl.dsp.exec_cmd("~/.config/omarchy/current/theme/bin/cycle-display"), { description = "Cycle display" })
+hl.bind("F7", hl.dsp.exec_cmd("~/.local/bin/snxz/cycle-display"), { description = "Cycle display" })
 
 -- Move active window with SUPER + SHIFT + arrow keys
 hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "left" }), { description = "Move window left" })
@@ -136,6 +136,7 @@ hl.bind("SUPER + mouse_down", hl.dsp.focus({ direction = "right" }), { descripti
 ------------------
 
 -- 3-finger swipe to move focus between windows (workspace-agnostic & monitor-aware, natural scrolling)
+
 hl.gesture({
 	fingers = 3,
 	direction = "left",
@@ -168,7 +169,6 @@ hl.gesture({
 	end,
 })
 
--- 4-finger horizontal swipe to switch workspaces
 hl.gesture({
 	fingers = 4,
 	direction = "horizontal",
@@ -222,7 +222,6 @@ hl.config({
 
 			-- Use two-finger clicks for right-click instead of lower-right corner.
 			-- clickfinger_behavior = true,
-
 			-- Control the speed of your scrolling.
 			scroll_factor = 1,
 
@@ -230,7 +229,7 @@ hl.config({
 			disable_while_typing = true,
 
 			-- Left-click-and-drag with three fingers.
-			-- drag_3fg = 1,
+			drag_3fg = 1,
 		},
 	},
 })

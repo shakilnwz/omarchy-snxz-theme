@@ -1,0 +1,40 @@
+# Omarchy Quickshell theme styling for SNXZ
+
+[lock]
+background = "#00000e"
+background-alpha = 0.66
+text = "#c7efe3"
+placeholder = "#c7efe3"
+text-error = "#ff4d6d"
+border = "#7186fd"
+border-active = "#b388ff"
+border-error = "#ff4d6d"
+border-alpha = 1.0
+selection = "#7186fd"
+selection-alpha = 0.45
+
+[controls]
+normal-color = "foreground"
+hover-cursor-color = "accent"
+selected-color = "accent"
+normal-fill-alpha = 0.08
+normal-border-alpha = 0.4
+hover-cursor-fill-alpha = 0.16
+hover-cursor-border-alpha = 0.8
+selected-fill-alpha = 0.25
+selected-border-alpha = 1.0
+
+[menu]
+background = "#00000e"
+background-alpha = 0.85
+text = "#c7efe3"
+border = "#5f6167"
+border-alpha = 0.6
+selected-background = "#112a3c"
+selected-background-alpha = 0.95
+selected-text = "#7186fd"
+selected-border = "#9fadfc"
+selected-border-alpha = 0.8
+scrim = "#000000"
+scrim-alpha = 0.4
+
