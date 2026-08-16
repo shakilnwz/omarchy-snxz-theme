@@ -194,14 +194,14 @@ hl.monitor({
 	output = "HDMI-A-2",
 	mode = "1920x1080@60",
 	position = "auto-up",
-	scale = "auto",
+	scale = 1,
 })
 
 hl.monitor({
 	output = "eDP-1",
 	mode = "1920x1080@60",
 	position = "auto",
-	scale = "auto",
+	scale = 1,
 })
 
 -- Input config
