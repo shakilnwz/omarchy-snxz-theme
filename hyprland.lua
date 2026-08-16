@@ -120,6 +120,11 @@ hl.bind(
 	{ description = "Herdr" }
 )
 hl.bind(
+	"SUPER + ALT + backslash",
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c '~/.local/bin/snxz/herdr-sessionizer --dual'"),
+	{ description = "Herdr Dual" }
+)
+hl.bind(
 	"SUPER + SHIFT + backslash",
 	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/tmux-sessionizer"),
 	{ description = "Tmux" }
