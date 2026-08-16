@@ -137,9 +137,19 @@ hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "right" }), { 
 hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "up" }), { description = "Move window up" })
 hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "down" }), { description = "Move window down" })
 
--- Cycle focus through windows on the active monitor
-hl.bind("SUPER + mouse_up", hl.dsp.exec_raw("cyclenext", "prev"), { description = "Cycle window prev" })
-hl.bind("SUPER + mouse_down", hl.dsp.exec_raw("cyclenext"), { description = "Cycle window next" })
+-- Helper to perform spatial focus movement but strictly constrained to the active monitor
+local function constrain_focus(dir, rev_dir)
+	local cur_mon = hl.get_active_monitor().id
+	hl.dispatch(hl.dsp.focus({ direction = dir }))
+	local new_mon = hl.get_active_monitor().id
+	
+	if cur_mon ~= new_mon then
+		hl.dispatch(hl.dsp.focus({ direction = rev_dir }))
+	end
+end
+
+hl.bind("SUPER + mouse_up", function() constrain_focus("left", "right") end, { description = "Focus left (constrained)" })
+hl.bind("SUPER + mouse_down", function() constrain_focus("right", "left") end, { description = "Focus right (constrained)" })
 
 ------------------
 ---- GESTURES ----
