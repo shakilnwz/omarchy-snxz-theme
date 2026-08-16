@@ -23,7 +23,7 @@ Run the main installer script from the root of the repository:
 ---
 
 ### 2. Install Quickshell Plugins (Optional / Standalone)
-To install the custom shell plugins (Clock + compact rounded lock screen, 600px wide launcher menu, rounded volume/brightness OSD, and rounded notification toasts):
+To install the custom shell plugins (Clock + compact rounded lock screen and 600px wide launcher menu):
 
 ```bash
 ./plugins/install-plugins.sh
@@ -32,9 +32,7 @@ To install the custom shell plugins (Clock + compact rounded lock screen, 600px 
 **What this does automatically:**
 - Deploys **`snxz.lock`** to `~/.config/omarchy/plugins/snxz.lock` (12-hour live clock, date, `300x50` compact box, and 10px rounded corners).
 - Deploys **`snxz.menu`** to `~/.config/omarchy/plugins/snxz.menu` (600px wide launcher card and rounded selection rows).
-- Deploys **`snxz.osd`** to `~/.config/omarchy/plugins/snxz.osd` (Volume, brightness, and media OSD card with rounded corners and progress bar).
-- Deploys **`snxz.notifications`** to `~/.config/omarchy/plugins/snxz.notifications` (Desktop notification daemon with rounded toast cards).
-- Rescans and enables all 4 plugins in `omarchy-shell` and restarts the shell.
+- Rescans and enables both plugins in `omarchy-shell` and restarts the shell.
 - *Note:* Because these are global user plugins, their structural features persist across all themes while adapting to each theme's active color palette.
 
 ---
@@ -79,9 +77,7 @@ To install the custom shell plugins (Clock + compact rounded lock screen, 600px 
 ├── plugins/                    # Standalone Quickshell plugins
 │   ├── install-plugins.sh      # Plugin installer and activator
 │   ├── lock/                   # snxz.lock (Clock + compact rounded lock screen)
-│   ├── menu/                   # snxz.menu (600px wide rounded launcher)
-│   ├── notifications/          # snxz.notifications (Rounded notification toasts)
-│   └── osd/                    # snxz.osd (Rounded volume & brightness OSD)
+│   └── menu/                   # snxz.menu (600px wide rounded launcher)
 ├── preview.png                 # Theme preview screenshot
 ├── shell.toml                  # Quickshell surface, lock, and menu styling
 └── *.theme / *.conf / *.json   # Terminal, editor, and app color definitions

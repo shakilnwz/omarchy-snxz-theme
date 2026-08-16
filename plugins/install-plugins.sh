@@ -23,22 +23,6 @@ if [[ -d "$PLUGINS_DIR/menu" ]]; then
     echo "  ✓ Installed Wide Menu Plugin (~/.config/omarchy/plugins/snxz.menu)"
 fi
 
-# 3. Install OSD plugin (Volume/Brightness with rounded card and bar)
-if [[ -d "$PLUGINS_DIR/osd" ]]; then
-    rm -rf "$TARGET_DIR/snxz.osd"
-    mkdir -p "$TARGET_DIR/snxz.osd"
-    cp -r "$PLUGINS_DIR/osd"/* "$TARGET_DIR/snxz.osd/"
-    echo "  ✓ Installed OSD Plugin (~/.config/omarchy/plugins/snxz.osd)"
-fi
-
-# 4. Install Notifications plugin (Rounded toast notification cards)
-if [[ -d "$PLUGINS_DIR/notifications" ]]; then
-    rm -rf "$TARGET_DIR/snxz.notifications"
-    mkdir -p "$TARGET_DIR/snxz.notifications"
-    cp -r "$PLUGINS_DIR/notifications"/* "$TARGET_DIR/snxz.notifications/"
-    echo "  ✓ Installed Notifications Plugin (~/.config/omarchy/plugins/snxz.notifications)"
-fi
-
 # 5. Rescan and Enable in Quickshell
 if command -v omarchy-shell >/dev/null 2>&1; then
     omarchy-shell shell rescanPlugins >/dev/null 2>&1 || true
@@ -47,8 +31,6 @@ fi
 if command -v omarchy >/dev/null 2>&1; then
     omarchy plugin enable snxz.lock >/dev/null 2>&1 || true
     omarchy plugin enable snxz.menu >/dev/null 2>&1 || true
-    omarchy plugin enable snxz.osd >/dev/null 2>&1 || true
-    omarchy plugin enable snxz.notifications >/dev/null 2>&1 || true
     omarchy restart shell >/dev/null 2>&1 || true
     echo "  ✓ Enabled all SNXZ plugins & restarted Quickshell"
 fi
