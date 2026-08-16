@@ -23,7 +23,15 @@ if [[ -d "$PLUGINS_DIR/menu" ]]; then
     echo "  ✓ Installed Wide Menu Plugin (~/.config/omarchy/plugins/snxz.menu)"
 fi
 
-# 5. Rescan and Enable in Quickshell
+# 3. Install Taskbar plugin (Waybar style window icons)
+if [[ -d "$PLUGINS_DIR/taskbar" ]]; then
+    rm -rf "$TARGET_DIR/snxz.taskbar"
+    mkdir -p "$TARGET_DIR/snxz.taskbar"
+    cp -r "$PLUGINS_DIR/taskbar"/* "$TARGET_DIR/snxz.taskbar/"
+    echo "  ✓ Installed Taskbar Plugin (~/.config/omarchy/plugins/snxz.taskbar)"
+fi
+
+# 4. Rescan and Enable in Quickshell
 if command -v omarchy-shell >/dev/null 2>&1; then
     omarchy-shell shell rescanPlugins >/dev/null 2>&1 || true
 fi
@@ -31,6 +39,7 @@ fi
 if command -v omarchy >/dev/null 2>&1; then
     omarchy plugin enable snxz.lock >/dev/null 2>&1 || true
     omarchy plugin enable snxz.menu >/dev/null 2>&1 || true
+    omarchy plugin enable snxz.taskbar >/dev/null 2>&1 || true
     omarchy restart shell >/dev/null 2>&1 || true
     echo "  ✓ Enabled all SNXZ plugins & restarted Quickshell"
 fi
