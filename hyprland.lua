@@ -1,6 +1,8 @@
 -- This file is the Lua configuration for Hyprland (Omarchy Quattro / Hyprland 0.55+).
 -- It is intended to be included / required in your main hyprland.lua.
 
+local cycle_display = require("cycle_display")
+
 local activeBorderColor = "rgb(7186fd)"
 local activeShadowColor = "rgb(8496fd)"
 local inactiveBorderColor = "rgba(00000eba)"
@@ -124,7 +126,7 @@ hl.bind(
 	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/tmux-sessionizer"),
 	{ description = "Tmux" }
 )
-hl.bind("F7", hl.dsp.exec_cmd("~/.local/bin/snxz/cycle-display"), { description = "Cycle display" })
+hl.bind("F7", cycle_display, { description = "Cycle display" })
 
 -- Move active window with SUPER + SHIFT + arrow keys
 hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "left" }), { description = "Move window left" })
