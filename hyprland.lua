@@ -194,14 +194,14 @@ hl.monitor({
 	output = "HDMI-A-2",
 	mode = "1920x1080@60",
 	position = "auto-up",
-	scale = omarchy_monitor_scale,
+	scale = "auto",
 })
 
 hl.monitor({
 	output = "eDP-1",
 	mode = "1920x1080@60",
 	position = "auto",
-	scale = omarchy_monitor_scale,
+	scale = "auto",
 })
 
 -- Input config
