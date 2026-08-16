@@ -137,9 +137,9 @@ hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "right" }), { 
 hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "up" }), { description = "Move window up" })
 hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "down" }), { description = "Move window down" })
 
--- Cycle workspaces on the active monitor with SUPER + mouse scroll wheel
-hl.bind("SUPER + mouse_up", hl.dsp.exec_raw("workspace", "m-1"), { description = "Cycle workspace prev" })
-hl.bind("SUPER + mouse_down", hl.dsp.exec_raw("workspace", "m+1"), { description = "Cycle workspace next" })
+-- Cycle focus through windows on the active monitor
+hl.bind("SUPER + mouse_up", hl.dsp.exec_raw("cyclenext", "prev"), { description = "Cycle window prev" })
+hl.bind("SUPER + mouse_down", hl.dsp.exec_raw("cyclenext"), { description = "Cycle window next" })
 
 ------------------
 ---- GESTURES ----
