@@ -161,7 +161,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "left",
 	action = function()
-		hl.dispatch(hl.dsp.focus({ direction = "right" }))
+		constrain_focus("right", "left")
 	end,
 })
 
@@ -169,7 +169,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "right",
 	action = function()
-		hl.dispatch(hl.dsp.focus({ direction = "left" }))
+		constrain_focus("left", "right")
 	end,
 })
 
