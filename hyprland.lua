@@ -11,6 +11,11 @@ local inactiveShadowColor = "rgba(00000ea6)"
 -----------------------
 
 hl.config({
+	cursor = {
+		no_warps = true,
+		warp_on_change_workspace = 0,
+	},
+
 	general = {
 		col = {
 			active_border = activeBorderColor,
@@ -142,14 +147,18 @@ local function constrain_focus(dir, rev_dir)
 	local cur_mon = hl.get_active_monitor().id
 	hl.dispatch(hl.dsp.focus({ direction = dir }))
 	local new_mon = hl.get_active_monitor().id
-	
+
 	if cur_mon ~= new_mon then
 		hl.dispatch(hl.dsp.focus({ direction = rev_dir }))
 	end
 end
 
-hl.bind("SUPER + mouse_up", function() constrain_focus("left", "right") end, { description = "Focus left (constrained)" })
-hl.bind("SUPER + mouse_down", function() constrain_focus("right", "left") end, { description = "Focus right (constrained)" })
+hl.bind("SUPER + mouse_up", function()
+	constrain_focus("left", "right")
+end, { description = "Focus left (constrained)" })
+hl.bind("SUPER + mouse_down", function()
+	constrain_focus("right", "left")
+end, { description = "Focus right (constrained)" })
 
 ------------------
 ---- GESTURES ----
