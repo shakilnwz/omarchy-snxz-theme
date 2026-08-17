@@ -50,9 +50,10 @@ To install the custom shell plugins (Clock + compact rounded lock screen and 600
 | `SUPER + SHIFT + D` | Lazydocker | Docker TUI manager |
 | `F7` | Cycle Display | Toggle multi-monitor outputs |
 
-### Window Movement & Focus
+### Window Management & Focus
 | Shortcut / Gesture | Action |
 | :--- | :--- |
+| `SUPER + Q` | Close active window |
 | `SUPER + SHIFT + Left/Right/Up/Down` | Move active window in direction |
 | `SUPER + Mouse Scroll Up/Down` | Focus left / right window |
 | **3-Finger Swipe** (Left / Right / Up / Down) | Spatial window focus across windows & monitors |

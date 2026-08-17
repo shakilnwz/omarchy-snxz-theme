@@ -102,6 +102,7 @@ hl.window_rule({
 ---- CUSTOM KEYBINDS ----
 -------------------------
 
+hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "Close active window" })
 hl.bind(
 	"SUPER + ALT + Return",
 	hl.dsp.exec_cmd('uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" zsh -c "herdr"'),
