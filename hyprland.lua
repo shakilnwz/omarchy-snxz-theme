@@ -116,26 +116,26 @@ hl.bind(
 )
 hl.bind(
 	"SUPER + SHIFT + O",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/vnote"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/state/omarchy/current/theme/bin/vnote"),
 	{ description = "Vnote" }
 )
 hl.bind("SUPER + SHIFT + slash", hl.dsp.exec_cmd("uwsm-app -- KeePassXC"), { description = "Passwords" })
 hl.bind(
 	"SUPER + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/herdr-sessionizer"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/state/omarchy/current/theme/bin/herdr-sessionizer"),
 	{ description = "Herdr" }
 )
 hl.bind(
 	"SUPER + ALT + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c '~/.local/bin/snxz/herdr-sessionizer --dual'"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c '~/.local/state/omarchy/current/theme/bin/herdr-sessionizer --dual'"),
 	{ description = "Herdr Dual" }
 )
 hl.bind(
 	"SUPER + SHIFT + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/tmux-sessionizer"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/state/omarchy/current/theme/bin/tmux-sessionizer"),
 	{ description = "Tmux" }
 )
-hl.bind("F7", hl.dsp.exec_cmd("~/.local/bin/snxz/cycle-display"), { description = "Cycle display" })
+hl.bind("XF86Display", hl.dsp.exec_cmd("~/.local/state/omarchy/current/theme/bin/cycle-display"), { description = "Cycle display" })
 
 -- Move active window with SUPER + SHIFT + arrow keys
 hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "left" }), { description = "Move window left" })
@@ -143,22 +143,20 @@ hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "right" }), { 
 hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "up" }), { description = "Move window up" })
 hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "down" }), { description = "Move window down" })
 
--- Helper to perform spatial focus movement but strictly constrained to the active monitor
-local function constrain_focus(dir, rev_dir)
-	local cur_mon = hl.get_active_monitor().id
-	hl.dispatch(hl.dsp.focus({ direction = dir }))
-	local new_mon = hl.get_active_monitor().id
-
-	if cur_mon ~= new_mon then
-		hl.dispatch(hl.dsp.focus({ direction = rev_dir }))
-	end
+-- Move focus only within the current monitor. Hyprland normally falls back to
+-- the adjacent monitor when no local window exists in the requested direction.
+local function constrain_focus(direction)
+	local fallback = hl.get_config("binds.window_direction_monitor_fallback")
+	hl.config({ binds = { window_direction_monitor_fallback = false } })
+	hl.dispatch(hl.dsp.focus({ direction = direction }))
+	hl.config({ binds = { window_direction_monitor_fallback = fallback } })
 end
 
 hl.bind("SUPER + mouse_up", function()
-	constrain_focus("left", "right")
+	constrain_focus("l")
 end, { description = "Focus left (constrained)" })
 hl.bind("SUPER + mouse_down", function()
-	constrain_focus("right", "left")
+	constrain_focus("r")
 end, { description = "Focus right (constrained)" })
 
 ------------------
@@ -171,7 +169,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "left",
 	action = function()
-		constrain_focus("right", "left")
+		constrain_focus("r")
 	end,
 })
 
@@ -179,7 +177,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "right",
 	action = function()
-		constrain_focus("left", "right")
+		constrain_focus("l")
 	end,
 })
 
@@ -187,7 +185,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "up",
 	action = function()
-		hl.dispatch(hl.dsp.focus({ direction = "up" }))
+		constrain_focus("u")
 	end,
 })
 
@@ -195,7 +193,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "down",
 	action = function()
-		hl.dispatch(hl.dsp.focus({ direction = "down" }))
+		constrain_focus("d")
 	end,
 })
 

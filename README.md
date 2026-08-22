@@ -7,18 +7,20 @@ A modern, high-contrast dark theme with cyan, mauve, and blue-indigo accents tai
 ## 🚀 Clean Installation Flow
 
 ### 1. Install the Theme
-Run the main installer script from the root of the repository:
+Install directly with Omarchy:
 
 ```bash
-./install.sh
+omarchy theme install git@github.com:shakilnwz/omarchy-snxz-theme.git
 ```
 
 **What this does automatically:**
-- Copies helper scripts (`vnote`, `herdr-sessionizer`, `tmux-sessionizer`, `cycle-display`) to `~/.local/bin/snxz/` and makes them executable.
-- Symlinks the theme directory into `~/.config/omarchy/themes/snxz`.
-- Copies `herdr.toml` into `~/.config/herdr/config.toml` (with custom palette, tabs, `ctrl+a` prefix, and sessionizer integration).
-- Idempotently adds `~/.local/bin/snxz` to `$PATH` and configures `Ctrl+\` shortcut in `~/.zshrc`.
-- Applies the theme immediately using `omarchy theme set snxz`.
+- Clones the theme into `~/.config/omarchy/themes/snxz`.
+- Applies it with `omarchy theme set snxz`.
+- Makes the theme's `bin/` helpers available to its Hyprland keybinds from `~/.local/state/omarchy/current/theme/bin/`; no separate binary installation or `$PATH` change is required.
+
+For updates, run `omarchy theme update`, then reapply with `omarchy theme set snxz`.
+
+`herdr.toml` is optional personal application configuration and is intentionally not installed or overwritten by the theme.
 
 ---
 
@@ -48,7 +50,7 @@ To install the custom shell plugins (Clock + compact rounded lock screen and 600
 | `SUPER + SHIFT + O` | Vnote | Interactive `fzf` markdown note taker |
 | `SUPER + SHIFT + /` | KeePassXC | Password manager |
 | `SUPER + SHIFT + D` | Lazydocker | Docker TUI manager |
-| `F7` | Cycle Display | Toggle multi-monitor outputs |
+| Display key (no Fn) | Cycle Display | Toggle multi-monitor outputs |
 
 ### Window Management & Focus
 | Shortcut / Gesture | Action |
@@ -66,7 +68,7 @@ To install the custom shell plugins (Clock + compact rounded lock screen and 600
 ```
 .
 ├── backgrounds/                # Theme wallpaper collection
-├── bin/                        # Helper scripts installed to ~/.local/bin/snxz/
+├── bin/                        # Helper scripts run from Omarchy's current-theme directory
 │   ├── cycle-display           # Display switcher
 │   ├── herdr-sessionizer       # Herdr popup switcher
 │   ├── tmux-sessionizer        # Tmux session manager
@@ -74,7 +76,7 @@ To install the custom shell plugins (Clock + compact rounded lock screen and 600
 ├── colors.toml                 # Core 16-color theme palette
 ├── herdr.toml                  # Herdr multiplexer configuration
 ├── hyprland.lua                # Omarchy Quattro Hyprland Lua configuration
-├── install.sh                  # Theme installation script
+├── install.sh                  # Thin wrapper around `omarchy theme install` for Git checkouts
 ├── plugins/                    # Standalone Quickshell plugins
 │   ├── install-plugins.sh      # Plugin installer and activator
 │   ├── lock/                   # snxz.lock (Clock + compact rounded lock screen)
