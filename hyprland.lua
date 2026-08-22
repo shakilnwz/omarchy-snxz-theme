@@ -64,6 +64,9 @@ hl.config({
 	},
 })
 
+-- Match workspace transitions to the theme's window-focus timing.
+hl.animation({ leaf = "workspaces", enabled = true, speed = 3.79, bezier = "easeOutQuint", style = "slide" })
+
 ----------------------
 ---- WINDOW RULES ----
 ----------------------
