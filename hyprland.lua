@@ -143,21 +143,37 @@ hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "right" }), { 
 hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "up" }), { description = "Move window up" })
 hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "down" }), { description = "Move window down" })
 
--- Move focus only within the current monitor. Hyprland normally falls back to
--- the adjacent monitor when no local window exists in the requested direction.
-local function constrain_focus(direction)
+-- Move through windows on the current monitor first. At an edge, move to the
+-- adjacent workspace on that same monitor instead of falling back to another
+-- monitor.
+local function constrain_focus(direction, workspace)
+	local active_window = hl.get_active_window()
+	if active_window == nil then
+		return
+	end
+
 	local fallback = hl.get_config("binds.window_direction_monitor_fallback")
 	hl.config({ binds = { window_direction_monitor_fallback = false } })
 	hl.dispatch(hl.dsp.focus({ direction = direction }))
 	hl.config({ binds = { window_direction_monitor_fallback = fallback } })
+
+	local focused_window = hl.get_active_window()
+	if focused_window ~= nil and focused_window.address == active_window.address then
+		hl.dispatch(hl.dsp.focus({ workspace = workspace, on_current_monitor = true }))
+	end
 end
 
+-- Omarchy defaults SUPER + mouse_up/down to workspace navigation. Unbind those
+-- first so only the constrained focus behavior below executes.
+hl.unbind("SUPER + mouse_up")
+hl.unbind("SUPER + mouse_down")
+
 hl.bind("SUPER + mouse_up", function()
-	constrain_focus("l")
-end, { description = "Focus left (constrained)" })
+	constrain_focus("l", "e-1")
+end, { description = "Focus left or previous workspace" })
 hl.bind("SUPER + mouse_down", function()
-	constrain_focus("r")
-end, { description = "Focus right (constrained)" })
+	constrain_focus("r", "e+1")
+end, { description = "Focus right or next workspace" })
 
 ------------------
 ---- GESTURES ----
@@ -169,7 +185,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "left",
 	action = function()
-		constrain_focus("r")
+		constrain_focus("r", "e+1")
 	end,
 })
 
@@ -177,7 +193,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "right",
 	action = function()
-		constrain_focus("l")
+		constrain_focus("l", "e-1")
 	end,
 })
 
@@ -185,7 +201,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "up",
 	action = function()
-		constrain_focus("u")
+		constrain_focus("u", "e-1")
 	end,
 })
 
@@ -193,7 +209,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "down",
 	action = function()
-		constrain_focus("d")
+		constrain_focus("d", "e+1")
 	end,
 })
 
