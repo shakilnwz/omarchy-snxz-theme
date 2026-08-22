@@ -146,24 +146,65 @@ hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "right" }), { 
 hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "up" }), { description = "Move window up" })
 hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "down" }), { description = "Move window down" })
 
--- Move through windows on the current monitor first. At an edge, move to the
--- adjacent workspace on that same monitor instead of falling back to another
--- monitor.
-local function constrain_focus(direction, workspace)
+-- Traverse every normal window on the active monitor as one slider. Windows
+-- are grouped by workspace, then ordered by their on-screen position. Focusing
+-- a target on another workspace switches to it before focusing that window.
+local function slide_focus(step)
 	local active_window = hl.get_active_window()
-	if active_window == nil then
+	local active_monitor = hl.get_active_monitor()
+	if active_window == nil or active_monitor == nil then
 		return
 	end
 
-	local fallback = hl.get_config("binds.window_direction_monitor_fallback")
-	hl.config({ binds = { window_direction_monitor_fallback = false } })
-	hl.dispatch(hl.dsp.focus({ direction = direction }))
-	hl.config({ binds = { window_direction_monitor_fallback = fallback } })
-
-	local focused_window = hl.get_active_window()
-	if focused_window ~= nil and focused_window.address == active_window.address then
-		hl.dispatch(hl.dsp.focus({ workspace = workspace, on_current_monitor = true }))
+	local windows = {}
+	for _, window in ipairs(hl.get_windows({ monitor = active_monitor, mapped = true })) do
+		if window.workspace ~= nil and not window.workspace.special and not window.hidden then
+			table.insert(windows, window)
+		end
 	end
+
+	if #windows < 2 then
+		return
+	end
+
+	local function position(window)
+		if type(window.at) == "table" then
+			return window.at.x or 0, window.at.y or 0
+		end
+		return 0, 0
+	end
+
+	table.sort(windows, function(a, b)
+		if a.workspace.id ~= b.workspace.id then
+			return a.workspace.id < b.workspace.id
+		end
+
+		local a_x, a_y = position(a)
+		local b_x, b_y = position(b)
+		if a_x ~= b_x then
+			return a_x < b_x
+		end
+		return a_y < b_y
+	end)
+
+	local current_index
+	for index, window in ipairs(windows) do
+		if window.address == active_window.address then
+			current_index = index
+			break
+		end
+	end
+
+	if current_index == nil then
+		return
+	end
+
+	local target_index = ((current_index - 1 + step) % #windows) + 1
+	local target = windows[target_index]
+	if target.workspace.id ~= active_window.workspace.id then
+		hl.dispatch(hl.dsp.focus({ workspace = target.workspace, on_current_monitor = true }))
+	end
+	hl.dispatch(hl.dsp.focus({ window = target }))
 end
 
 -- Omarchy defaults SUPER + mouse_up/down to workspace navigation. Unbind those
@@ -172,11 +213,11 @@ hl.unbind("SUPER + mouse_up")
 hl.unbind("SUPER + mouse_down")
 
 hl.bind("SUPER + mouse_up", function()
-	constrain_focus("l", "e-1")
-end, { description = "Focus left or previous workspace" })
+	slide_focus(-1)
+end, { description = "Previous window on current monitor" })
 hl.bind("SUPER + mouse_down", function()
-	constrain_focus("r", "e+1")
-end, { description = "Focus right or next workspace" })
+	slide_focus(1)
+end, { description = "Next window on current monitor" })
 
 ------------------
 ---- GESTURES ----
@@ -188,7 +229,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "left",
 	action = function()
-		constrain_focus("r", "e+1")
+		slide_focus(1)
 	end,
 })
 
@@ -196,7 +237,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "right",
 	action = function()
-		constrain_focus("l", "e-1")
+		slide_focus(-1)
 	end,
 })
 
@@ -204,7 +245,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "up",
 	action = function()
-		constrain_focus("u", "e-1")
+		slide_focus(-1)
 	end,
 })
 
@@ -212,7 +253,7 @@ hl.gesture({
 	fingers = 3,
 	direction = "down",
 	action = function()
-		constrain_focus("d", "e+1")
+		slide_focus(1)
 	end,
 })
 
