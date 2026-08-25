@@ -156,27 +156,15 @@ hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "down" }), { de
 -- a target on another workspace switches to it before focusing that window.
 local function slide_focus(step)
 	local active_window = hl.get_active_window()
-	local active_monitor = hl.get_active_monitor()
-	if active_window == nil or active_monitor == nil then
+	if active_window == nil then
 		return
 	end
 
 	local windows = {}
-	for _, window in ipairs(hl.get_windows({ monitor = active_monitor, mapped = true })) do
+	for _, window in ipairs(hl.get_windows({ monitor = active_window.monitor, mapped = true })) do
 		if window.workspace ~= nil and not window.workspace.special and not window.hidden then
 			table.insert(windows, window)
 		end
-	end
-
-	if #windows < 2 then
-		return
-	end
-
-	local function position(window)
-		if type(window.at) == "table" then
-			return window.at.x or 0, window.at.y or 0
-		end
-		return 0, 0
 	end
 
 	table.sort(windows, function(a, b)
@@ -184,12 +172,12 @@ local function slide_focus(step)
 			return a.workspace.id < b.workspace.id
 		end
 
-		local a_x, a_y = position(a)
-		local b_x, b_y = position(b)
-		if a_x ~= b_x then
-			return a_x < b_x
+		local a_at = type(a.at) == "table" and a.at or {}
+		local b_at = type(b.at) == "table" and b.at or {}
+		if (a_at.x or 0) ~= (b_at.x or 0) then
+			return (a_at.x or 0) < (b_at.x or 0)
 		end
-		return a_y < b_y
+		return (a_at.y or 0) < (b_at.y or 0)
 	end)
 
 	local current_index
@@ -199,13 +187,11 @@ local function slide_focus(step)
 			break
 		end
 	end
-
 	if current_index == nil then
 		return
 	end
 
-	local target_index = ((current_index - 1 + step) % #windows) + 1
-	local target = windows[target_index]
+	local target = windows[(current_index - 1 + step) % #windows + 1]
 	if target.workspace.id ~= active_window.workspace.id then
 		hl.dispatch(hl.dsp.focus({ workspace = target.workspace, on_current_monitor = true }))
 	end
