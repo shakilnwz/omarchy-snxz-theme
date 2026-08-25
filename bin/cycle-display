@@ -2,6 +2,7 @@
 
 -- Cycle the known laptop/external display profiles for this theme.
 -- Profiles: both -> external only -> laptop only -> both.
+-- Modes/positions mirror hl.monitor() in hyprland.lua; update both together.
 
 local internal = "eDP-1"
 local external = "HDMI-A-2"

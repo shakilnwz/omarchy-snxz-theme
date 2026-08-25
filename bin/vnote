@@ -119,7 +119,7 @@ except Exception:
 ')
             if [[ -n "$target_pane" ]]; then
                 herdr pane send-keys "$target_pane" "esc" >/dev/null 2>&1 || true
-                herdr pane run "$target_pane" ":e $target_file" >/dev/null 2>&1 || true
+                herdr pane run "$target_pane" ":e '$target_file'" >/dev/null 2>&1 || true
             fi
         fi
     else

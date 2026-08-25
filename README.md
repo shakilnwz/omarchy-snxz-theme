@@ -7,25 +7,40 @@ A modern, high-contrast dark theme with cyan, mauve, and blue-indigo accents tai
 ## 🚀 Clean Installation Flow
 
 ### 1. Install the Theme
-Install directly with Omarchy:
+
+> **Requires Omarchy Quattro (4.0.1+).** Since 4.0.1, themes cloned by `omarchy theme install <url>` are staged *without* their `.lua` or terminal configs — those run code at login, so repo-installed themes are restricted to colors only. Because this theme's native Hyprland configuration is its centerpiece, install it as your own working copy instead: Omarchy explicitly trusts a symlink to a checkout you maintain and stages it verbatim.
+
+Clone the repository anywhere you keep code, then run the installer from the checkout:
+
+```bash
+git clone git@github.com:shakilnwz/omarchy-snxz-theme.git ~/code/omarchy-themes/omarchy-snxz-theme
+~/code/omarchy-themes/omarchy-snxz-theme/install.sh
+```
+
+**What this does automatically:**
+- Symlinks the checkout to `~/.config/omarchy/themes/snxz` (refuses to touch an existing real directory there).
+- Applies the theme with `omarchy theme set snxz`, staging the full configuration: Hyprland Lua (layout, keybinds, gestures, monitor setup), terminal palettes, editor/app theming, and shell styling.
+- Puts the theme's `bin/` helpers under `~/.local/bin/snxz/` as symlinks to the checkout — Hyprland keybinds call them there, interactive shells reach them once `$HOME/.local/bin/snxz` is on `$PATH`. Nothing outside that directory is touched.
+
+To apply changes made in the checkout, re-run `omarchy theme set snxz`. To update, `git pull` inside the checkout, then run the same command.
+
+<details>
+<summary>Low-trust alternative</summary>
 
 ```bash
 omarchy theme install git@github.com:shakilnwz/omarchy-snxz-theme.git
 ```
 
-**What this does automatically:**
-- Clones the theme into `~/.config/omarchy/themes/snxz`.
-- Applies it with `omarchy theme set snxz`.
-- Makes the theme's `bin/` helpers available to its Hyprland keybinds from `~/.local/state/omarchy/current/theme/bin/`; no separate binary installation or `$PATH` change is required.
+Still works for color-only styling of supported apps, but Omarchy will strip the Hyprland Lua, Neovim config, and terminal configs from this install.
 
-For updates, run `omarchy theme update`, then reapply with `omarchy theme set snxz`.
+</details>
 
 `herdr.toml` is optional personal application configuration and is intentionally not installed or overwritten by the theme.
 
 ---
 
 ### 2. Install Quickshell Plugins (Optional / Standalone)
-To install the custom shell plugins (Clock + compact rounded lock screen and 600px wide launcher menu):
+To install the custom shell plugins (Clock + compact rounded lock screen, 600px wide launcher menu, and Waybar-style taskbar):
 
 ```bash
 ./plugins/install-plugins.sh
@@ -34,7 +49,8 @@ To install the custom shell plugins (Clock + compact rounded lock screen and 600
 **What this does automatically:**
 - Deploys **`snxz.lock`** to `~/.config/omarchy/plugins/snxz.lock` (12-hour live clock, date, `300x50` compact box, and 10px rounded corners).
 - Deploys **`snxz.menu`** to `~/.config/omarchy/plugins/snxz.menu` (600px wide launcher card and rounded selection rows).
-- Rescans and enables both plugins in `omarchy-shell` and restarts the shell.
+- Deploys **`snxz.taskbar`** to `~/.config/omarchy/plugins/snxz.taskbar` (Waybar-style open-window icons in the bar's left section).
+- Rescans and enables all three plugins in `omarchy-shell` and restarts the shell.
 - *Note:* Because these are global user plugins, their structural features persist across all themes while adapting to each theme's active color palette.
 
 ---
@@ -68,7 +84,7 @@ To install the custom shell plugins (Clock + compact rounded lock screen and 600
 ```
 .
 ├── backgrounds/                # Theme wallpaper collection
-├── bin/                        # Helper scripts run from Omarchy's current-theme directory
+├── bin/                        # Helper scripts linked onto $PATH by install.sh
 │   ├── cycle-display           # Display switcher
 │   ├── herdr-sessionizer       # Herdr popup switcher
 │   ├── tmux-sessionizer        # Tmux session manager
@@ -76,11 +92,12 @@ To install the custom shell plugins (Clock + compact rounded lock screen and 600
 ├── colors.toml                 # Core 16-color theme palette
 ├── herdr.toml                  # Herdr multiplexer configuration
 ├── hyprland.lua                # Omarchy Quattro Hyprland Lua configuration
-├── install.sh                  # Thin wrapper around `omarchy theme install` for Git checkouts
+├── install.sh                  # Links this checkout into ~/.config/omarchy/themes/snxz and applies it
 ├── plugins/                    # Standalone Quickshell plugins
 │   ├── install-plugins.sh      # Plugin installer and activator
 │   ├── lock/                   # snxz.lock (Clock + compact rounded lock screen)
-│   └── menu/                   # snxz.menu (600px wide rounded launcher)
+│   ├── menu/                   # snxz.menu (600px wide rounded launcher)
+│   └── taskbar/                # snxz.taskbar (Waybar-style open window icons)
 ├── preview.png                 # Theme preview screenshot
 ├── shell.toml                  # Quickshell surface, lock, and menu styling
 └── *.theme / *.conf / *.json   # Terminal, editor, and app color definitions

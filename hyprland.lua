@@ -100,6 +100,7 @@ hl.window_rule({
 	name = "tiled-window",
 	match = { float = false },
 	rounding = 0,
+	no_shadow = true,
 })
 -------------------------
 ---- CUSTOM KEYBINDS ----
@@ -119,26 +120,30 @@ hl.bind(
 )
 hl.bind(
 	"SUPER + SHIFT + O",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/state/omarchy/current/theme/bin/vnote"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/vnote"),
 	{ description = "Vnote" }
 )
 hl.bind("SUPER + SHIFT + slash", hl.dsp.exec_cmd("uwsm-app -- KeePassXC"), { description = "Passwords" })
 hl.bind(
 	"SUPER + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/state/omarchy/current/theme/bin/herdr-sessionizer"),
-	{ description = "Herdr" }
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/herdr-sessionizer"),
+	{ description = "Herdr sessionizer" }
 )
 hl.bind(
 	"SUPER + ALT + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c '~/.local/state/omarchy/current/theme/bin/herdr-sessionizer --dual'"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c '~/.local/bin/snxz/herdr-sessionizer --dual'"),
 	{ description = "Herdr Dual" }
 )
 hl.bind(
 	"SUPER + SHIFT + backslash",
-	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/state/omarchy/current/theme/bin/tmux-sessionizer"),
+	hl.dsp.exec_cmd("uwsm-app -- xdg-terminal-exec zsh -c ~/.local/bin/snxz/tmux-sessionizer"),
 	{ description = "Tmux" }
 )
-hl.bind("XF86Display", hl.dsp.exec_cmd("~/.local/state/omarchy/current/theme/bin/cycle-display"), { description = "Cycle display" })
+hl.bind(
+	"XF86Display",
+	hl.dsp.exec_cmd("~/.local/bin/snxz/cycle-display"),
+	{ description = "Cycle display" }
+)
 
 -- Move active window with SUPER + SHIFT + arrow keys
 hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "left" }), { description = "Move window left" })
